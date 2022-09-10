@@ -3,6 +3,7 @@ package ru.ermolnik.news
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.TabRowDefaults.Divider
@@ -30,13 +31,22 @@ fun NewsScreen(viewModel: NewsViewModel) {
                 )
             }
             is NewsState.Error -> {
-                Text(
-                    text = (state.value as NewsState.Error).throwable.toString(),
-                    modifier = Modifier
-                        .wrapContentSize()
-                        .align(Alignment.Center),
-                    textAlign = TextAlign.Center
-                )
+                Column(
+                    modifier = Modifier.align(Alignment.Center),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Прозошла ошибка попробуйте ещё раз",
+                        modifier = Modifier
+                            .wrapContentSize(),
+                        textAlign = TextAlign.Center
+                    )
+                    Button(onClick = { viewModel.refresh() }) {
+                        Text(text = "Обновить")
+                    }
+                }
+
             }
             is NewsState.Content-> {
                 SwipeRefresh(
@@ -45,17 +55,17 @@ fun NewsScreen(viewModel: NewsViewModel) {
                     onRefresh = { viewModel.refresh() },
                 ) {
                     LazyColumn(
-                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        val newsFillList = (state.value as NewsState.Content).news
+                        val newsFillList = (state.value as? NewsState.Content)?.news ?: emptyList()
                         itemsIndexed(newsFillList) { index, newsItem ->
                             Column {
                                 Text(
                                     text = newsItem.title,
                                     modifier = Modifier
                                         .wrapContentHeight(),
-                                    style = MaterialTheme.typography.h2,
-                                    textAlign = TextAlign.Center
+                                    style = MaterialTheme.typography.h5,
+                                    textAlign = TextAlign.Start
                                 )
                                 newsItem.description?.let {
                                     Text(
@@ -76,7 +86,10 @@ fun NewsScreen(viewModel: NewsViewModel) {
 
                             }
                             if (index < newsFillList.lastIndex)
-                                Divider(color = Color.Black, thickness = 1.dp)
+                                Divider(color = Color.Black,
+                                    thickness = 1.dp,
+                                    modifier = Modifier.padding(vertical = 12.dp)
+                                )
                         }
                     }
                 }

@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
                         NewsViewModel(
                             NewsRepository(
                                 NewsLocalDataSource(applicationContext),
-                                NewsRemoteDataSource(),
+                                NewsRemoteDataSource(applicationContext)
                             )
                         )
                     )

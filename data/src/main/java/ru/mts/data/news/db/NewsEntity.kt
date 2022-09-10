@@ -7,11 +7,11 @@ import ru.mts.data.news.repository.News
 
 @Entity(tableName = "news")
 data class NewsEntity(
-    @PrimaryKey @ColumnInfo(name = "id") val id: Int,
+    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val id: Int,
     @ColumnInfo(name = "title") val title: String,
-    @ColumnInfo(name = "description") val description: String,
+    @ColumnInfo(name = "description") val description: String?,
     @ColumnInfo(name = "link") val link: String,
-    @ColumnInfo(name = "creator") val full_description: String,
+    @ColumnInfo(name = "full_description") val full_description: String?,
     @ColumnInfo(name = "pubDate") val pubDate: String
 )
 

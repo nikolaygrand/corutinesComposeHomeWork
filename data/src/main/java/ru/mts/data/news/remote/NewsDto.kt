@@ -3,7 +3,7 @@ package ru.mts.data.news.remote
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
-import ru.mts.data.news.repository.News
+import ru.mts.data.news.db.NewsEntity
 
 
 class NewsDto {
@@ -27,8 +27,8 @@ class NewsDto {
         ): Parcelable
 }
 
-internal fun NewsDto.Response.toDomain(): News {
-    return News(
+internal fun NewsDto.Response.toDomain(): NewsEntity {
+    return NewsEntity(
         id,
         title,
         description,
