@@ -17,4 +17,8 @@ class NewsLocalDataSource(private val context: Context) {
             }
         }
     }
+
+    fun clear() {
+        AppDatabase.getDatabase(context).newsDao().deleteAll()
+    }
 }

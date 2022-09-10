@@ -24,5 +24,9 @@ class NewsRepository(
 
         }
     }
-    
+
+    fun clearLocalDb() {
+        newsLocalDataSource.clear()
+    }
+
 }

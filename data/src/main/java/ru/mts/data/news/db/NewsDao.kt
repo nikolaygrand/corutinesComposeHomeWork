@@ -19,4 +19,7 @@ interface NewsDao {
 
     @Delete
     fun delete(news: NewsEntity)
+
+    @Query("DELETE FROM news")
+    fun deleteAll()
 }

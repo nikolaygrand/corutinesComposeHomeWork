@@ -18,8 +18,15 @@ class NewsViewModel(private val repository: NewsRepository) : ViewModel() {
 
     init { refresh() }
 
+    fun clearDb() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.clearLocalDb()
+        }
+    }
+
     fun refresh() {
         viewModelScope.launch(Dispatchers.IO) {
+            _state.emit(NewsState.Loading)
             repository.getNews().collect {
                 it.doOnError { error ->
                     _state.emit(NewsState.Error(error))

@@ -42,7 +42,10 @@ fun NewsScreen(viewModel: NewsViewModel) {
                             .wrapContentSize(),
                         textAlign = TextAlign.Center
                     )
-                    Button(onClick = { viewModel.refresh() }) {
+                    Button(onClick = {
+                        viewModel.clearDb()
+                        viewModel.refresh()
+                    }) {
                         Text(text = "Обновить")
                     }
                 }
