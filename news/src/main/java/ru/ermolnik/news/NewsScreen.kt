@@ -2,15 +2,20 @@ package ru.ermolnik.news
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.TabRowDefaults.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 @Composable
 fun NewsScreen(viewModel: NewsViewModel) {
@@ -33,42 +38,48 @@ fun NewsScreen(viewModel: NewsViewModel) {
                     textAlign = TextAlign.Center
                 )
             }
-            is NewsState.Content -> {
-                LazyColumn {
-                    items((state.value as NewsState.Content).news) { newsItem ->
-                        Column(modifier = Modifier.fillMaxSize()) {
-                            Text(
-                                text = newsItem.title,
-                                modifier = Modifier
-                                    .wrapContentSize(),
-                                textAlign = TextAlign.Center
-                            )
-                            newsItem.description?.let {
+            is NewsState.Content-> {
+                SwipeRefresh(
+                    modifier = Modifier.fillMaxSize(),
+                    state = rememberSwipeRefreshState(false),
+                    onRefresh = { viewModel.refresh() },
+                ) {
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        val newsFillList = (state.value as NewsState.Content).news
+                        itemsIndexed(newsFillList) { index, newsItem ->
+                            Column {
                                 Text(
-                                    text = it,
+                                    text = newsItem.title,
                                     modifier = Modifier
-                                        .wrapContentSize(),
+                                        .wrapContentHeight(),
+                                    style = MaterialTheme.typography.h2,
                                     textAlign = TextAlign.Center
                                 )
-                            }
-                            newsItem.full_description?.let {
+                                newsItem.description?.let {
+                                    Text(
+                                        text = it,
+                                        modifier = Modifier
+                                            .wrapContentHeight(),
+                                        style = MaterialTheme.typography.subtitle2,
+                                        textAlign = TextAlign.Justify
+                                    )
+                                }
                                 Text(
-                                    text = it,
+                                    text = newsItem.pubDate,
                                     modifier = Modifier
-                                        .wrapContentSize(),
-                                    textAlign = TextAlign.Center
+                                        .wrapContentHeight(),
+                                    style = MaterialTheme.typography.caption,
+                                    textAlign = TextAlign.Right
                                 )
+
                             }
-                            Text(
-                                text = newsItem.pubDate,
-                                modifier = Modifier
-                                    .wrapContentSize(),
-                                textAlign = TextAlign.Center
-                            )
+                            if (index < newsFillList.lastIndex)
+                                Divider(color = Color.Black, thickness = 1.dp)
                         }
                     }
                 }
-
             }
         }
     }
